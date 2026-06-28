@@ -1,4 +1,4 @@
-import { useState, useRef, type DragEvent, type ChangeEvent } from 'react';
+import { useState, useRef, type ChangeEvent } from 'react';
 import { Upload, FileText, CheckCircle, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
@@ -9,7 +9,7 @@ interface CsvUploadProps {
   onSuccess?: (result: CsvImportResult) => void;
 }
 
-type UploadState = 'idle' | 'dragging' | 'uploading' | 'success' | 'error';
+type UploadState = 'idle' | 'uploading' | 'success' | 'error';
 
 export function CsvUpload({ onUpload, onSuccess }: CsvUploadProps) {
   const [state, setState] = useState<UploadState>('idle');
@@ -38,12 +38,6 @@ export function CsvUpload({ onUpload, onSuccess }: CsvUploadProps) {
       setErrorMsg('Upload failed. Please check your file and try again.');
       setState('error');
     }
-  };
-
-  const onDrop = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file) void handleFile(file);
   };
 
   const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -81,15 +75,10 @@ export function CsvUpload({ onUpload, onSuccess }: CsvUploadProps) {
   return (
     <div className="space-y-3">
       <div
-        onDrop={onDrop}
-        onDragOver={(e) => { e.preventDefault(); setState('dragging'); }}
-        onDragLeave={() => setState('idle')}
         onClick={() => inputRef.current?.click()}
         className={cn(
           'border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all duration-200',
-          state === 'dragging'
-            ? 'border-indigo-400 bg-indigo-50'
-            : 'border-slate-300 hover:border-indigo-300 hover:bg-slate-50',
+          'border-slate-300 hover:border-indigo-300 hover:bg-slate-50',
           state === 'error' && 'border-red-400 bg-red-50',
           state === 'uploading' && 'pointer-events-none opacity-70'
         )}
@@ -121,15 +110,11 @@ export function CsvUpload({ onUpload, onSuccess }: CsvUploadProps) {
         ) : (
           <div className="flex flex-col items-center gap-3">
             <div className="p-4 bg-indigo-50 rounded-full">
-              {state === 'dragging' ? (
-                <FileText className="text-indigo-500" size={32} />
-              ) : (
-                <Upload className="text-indigo-400" size={32} />
-              )}
+              <Upload className="text-indigo-400" size={32} />
             </div>
             <div>
               <p className="font-semibold text-slate-700">
-                {state === 'dragging' ? 'Drop your CSV here' : 'Drag & drop or click to upload'}
+                Click to upload CSV
               </p>
               <p className="text-sm text-slate-400 mt-1">CSV files only · max 10MB</p>
             </div>
@@ -139,7 +124,7 @@ export function CsvUpload({ onUpload, onSuccess }: CsvUploadProps) {
 
       <div className="bg-slate-50 rounded-lg p-3">
         <p className="text-xs font-semibold text-slate-500 mb-1">Expected CSV format:</p>
-        <code className="text-xs text-slate-600">name, email, phone (opt), company (opt)</code>
+        <code className="text-xs text-slate-600">name, email, phone (opt), company (opt), tags (opt, comma-separated)</code>
       </div>
     </div>
   );
