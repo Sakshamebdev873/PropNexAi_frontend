@@ -1,5 +1,5 @@
 import { useState, useRef, type ChangeEvent } from 'react';
-import { Upload, FileText, CheckCircle, AlertCircle } from 'lucide-react';
+import { Upload, CheckCircle, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import type { CsvImportResult } from '@/types';
